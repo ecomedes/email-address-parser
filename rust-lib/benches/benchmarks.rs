@@ -26,6 +26,15 @@ pub fn is_valid_benchmark(c: &mut Criterion) {
   c.bench_function("is_valid - obs", |b| b.iter(|| EmailAddress::is_valid(black_box(EMAIL_OBS), black_box(Some(ParsingOptions::new(true))))));
 }
 
+pub fn parse_core_benchmark(c: &mut Criterion) {
+  c.bench_function("parse_core - valid", |b| b.iter(|| EmailAddress::parse_core(black_box(EMAIL), black_box(None))));
+  c.bench_function("parse_core - invalid local part", |b| b.iter(|| EmailAddress::parse_core(black_box(EMAIL_INVALID_LOCAL_PART), black_box(None))));
+  c.bench_function("parse_core - invalid domain", |b| b.iter(|| EmailAddress::parse_core(black_box(EMAIL_INVALID_DOMAIN), black_box(None))));
+  c.bench_function("parse_core - unicode", |b| b.iter(|| EmailAddress::parse_core(black_box(EMAIL_UNICODE), black_box(None))));
+  c.bench_function("parse_core - long", |b| b.iter(|| EmailAddress::parse_core(black_box(EMAIL_LONG), black_box(None))));
+  c.bench_function("parse_core - obs", |b| b.iter(|| EmailAddress::parse_core(black_box(EMAIL_OBS), black_box(Some(ParsingOptions::new(true))))));
+}
+
 pub fn new_benchmark(c: &mut Criterion) {
   c.bench_function("new - valid", |b| b.iter(|| EmailAddress::new(black_box("foo"), black_box("bar.com"), black_box(None))));
   c.bench_function("new - invalid local part", |b| b.iter(|| EmailAddress::new(black_box("foo-"), black_box("bar.com"), black_box(None))));
@@ -35,5 +44,5 @@ pub fn new_benchmark(c: &mut Criterion) {
   c.bench_function("new - obs", |b| b.iter(|| EmailAddress::new(black_box("\u{0d}\u{0a} \u{0d}\u{0a} test"), black_box("iana.org"), black_box(None))));
 }
 
-criterion_group!(benches, parse_benchmark, is_valid_benchmark, new_benchmark);
+criterion_group!(benches, is_valid_benchmark, parse_core_benchmark, parse_benchmark, new_benchmark);
 criterion_main!(benches);

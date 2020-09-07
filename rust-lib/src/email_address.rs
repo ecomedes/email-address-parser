@@ -214,24 +214,6 @@ impl EmailAddress {
   pub fn toString(&self) -> String {
     format!("{}@{}", self.local_part, self.domain)
   }
-
-  fn parse_core<'i>(input: &'i str, options: Option<ParsingOptions>) -> Option<Pairs<'i, Rule>> {
-    let options = options.unwrap_or_default();
-    let is_strict = !options.is_lax;
-    match RFC5322::parse(Rule::address_single, input) {
-      Ok(parsed) => Some(parsed),
-      Err(_) => {
-        if is_strict {
-          None
-        } else {
-          match RFC5322::parse(Rule::address_single_obs, input) {
-            Ok(parsed) => Some(parsed),
-            Err(_) => None,
-          }
-        }
-      }
-    }
-  }
 }
 
 impl EmailAddress {
@@ -307,6 +289,25 @@ impl EmailAddress {
   /// ```
   pub fn get_domain(&self) -> &str {
     self.domain.as_str()
+  }
+
+  #[doc(hidden)]
+  pub fn parse_core<'i>(input: &'i str, options: Option<ParsingOptions>) -> Option<Pairs<'i, Rule>> {
+    let options = options.unwrap_or_default();
+    let is_strict = !options.is_lax;
+    match RFC5322::parse(Rule::address_single, input) {
+      Ok(parsed) => Some(parsed),
+      Err(_) => {
+        if is_strict {
+          None
+        } else {
+          match RFC5322::parse(Rule::address_single_obs, input) {
+            Ok(parsed) => Some(parsed),
+            Err(_) => None,
+          }
+        }
+      }
+    }
   }
 }
 
