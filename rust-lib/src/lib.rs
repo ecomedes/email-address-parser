@@ -36,6 +36,8 @@
 //! assert!(EmailAddress::is_valid("foö@bücher.de", None));
 //! ```
 
+extern crate nom;
+
 #[macro_use]
 extern crate pest_derive;
 
@@ -43,3 +45,5 @@ mod email_address;
 #[doc(inline)]
 pub use self::email_address::EmailAddress;
 pub use self::email_address::ParsingOptions;
+
+mod email_address_nom;
